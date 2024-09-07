@@ -16,17 +16,14 @@ class ColorWidget extends Widget {
 		this.color = color;
 		this.useTreshold = useTreshold;
 
-		if (this.useTreshold) {
-			const thresholdSlider = createSlider(0, 255, 125);
-			const thresholdID = `thresholder-${Math.floor(
-				Math.random() * (99999 - 1) - 1
-			)}`;
-			thresholdSlider.id(thresholdID);
-			thresholdSlider.position(this.x, this.y + this.img.height - 50);
+		this.thresholdSlider = null;
 
-			this.thresholdSlider = thresholdSlider;
-		} else {
-			this.thresholdSlider = null;
+		if (this.useTreshold) {
+			this.thresholdSlider = createSlider(0, 255, 125);
+			this.thresholdSlider.position(
+				this.x,
+				this.y + this.img.height - 50
+			);
 		}
 	}
 	draw() {

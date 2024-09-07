@@ -27,7 +27,7 @@ function setup() {
 		new ColorWidget(img, 0, img.height, "red"),
 		new ColorWidget(img, img.width, img.height, "red", true),
 		new ColorWidget(img, img.width * 2, 0, "green", false),
-		new ColorWidget(img, img.width * 2, img.height, "blue", false),
+		new ColorWidget(img, img.width * 2, img.height, "blue", true),
 	];
 }
 
