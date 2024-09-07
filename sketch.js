@@ -29,55 +29,15 @@ function draw() {
 	image(img, 0, 0);
 
 	// Invert filter
-	image(invertFilter(img), img.width, 0);
+	image(grayscaleFilter(img), img.width, 0);
 
 	// Grayscale filter
-	image(grayscaleFilter(img), 0, img.height);
+	image(rgbChannelFilter(img, "red"), 0, img.height);
 
-	// Red Channel filter
-	image(rgbChannelFilter(img, "blue"), img.width, img.height);
+	// Threshold channel filter
+	image(thresholdRGBFilter(img, "red", 125), img.width, img.height);
 
 	noLoop();
-}
-
-/**
- *
- * @param {*} img
- * @param {'red'|'green'|'blue'} channel
- * @returns
- */
-function rgbChannelFilter(img, channel) {
-	const channeled = createImage(img.width, img.height);
-
-	channeled.loadPixels();
-	img.loadPixels();
-
-	let index = 0,
-		red = 0,
-		green = 0,
-		blue = 0,
-		alpha = 0;
-
-	for (let x = 0; x < img.width; x++) {
-		for (let y = 0; y < img.height; y++) {
-			index = (y * img.width + x) * 4;
-
-			// Access original pixels
-			red = img.pixels[index + 0];
-			green = img.pixels[index + 1];
-			blue = img.pixels[index + 2];
-			alpha = img.pixels[index + 3];
-
-			// Replace channeled pixels into new image
-			channeled.pixels[index + 0] = channel === "red" ? red : 0;
-			channeled.pixels[index + 1] = channel === "green" ? green : 0;
-			channeled.pixels[index + 2] = channel === "blue" ? blue : 0;
-			channeled.pixels[index + 3] = alpha;
-		}
-	}
-
-	channeled.updatePixels();
-	return channeled;
 }
 
 /* function preload() {
