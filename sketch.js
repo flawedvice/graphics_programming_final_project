@@ -9,25 +9,42 @@ const w = 160,
 	h = 120,
 	gap = 20;
 
+/**
+ * @type {{red: number[], green: number[], blue: number[], alpha: number[]}}
+ */
+let rgbaChannels;
+
 function preload() {
 	// Face detection configuration
-	faceMesh = ml5.faceMesh(options);
+	//faceMesh = ml5.faceMesh(options);
 
 	// Start capturing the video
-	capture = createCapture(VIDEO);
-	capture.hide();
-	capture.elt.addEventListener("playing", () => (ready = true));
+	//capture = createCapture(VIDEO);
+	//capture.hide();
+	//capture.elt.addEventListener("playing", () => (ready = true));
+
+	// Debugging
+	img = loadImage("image.png");
+	rgbaChannels = separateChannels(img);
 }
 
 function setup() {
 	createCanvas(1920, 963);
+	pixelDensity(1);
 	background(255);
 }
 
 function draw() {
 	background(255);
 	if (img) {
-		createGrid();
+		if (!rgbaChannels) {
+			rgbaChannels = separateChannels(img);
+		}
+
+		image(img, 100, 200, w * 2, h * 2);
+		drawChannel(rgbaChannels.red, "red", 250, 200, w * 2, h * 2);
+		//createGrid();
+
 		/* for (let i = 0; i < faces.length; i++) {
 			let face = faces[i];
 			for (let j = 0; j < face.keypoints.length; j++) {
@@ -52,7 +69,17 @@ function createGrid() {
 
 		// Define columns (3)
 		for (let j = 0; j < 3; j++) {
-			if (j === 2 && i === 0) continue;
+			if (j === 2 && i === 0) {
+				drawChannel(
+					rgbaChannels.red,
+					"red",
+					x,
+					y,
+					img.width,
+					img.height
+				);
+				//continue;
+			}
 			image(img, x, y, w, h);
 			x += gap + w;
 		}
