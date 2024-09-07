@@ -1,26 +1,47 @@
 class Widget {
-	/**
-	 * @param {string} img
-	 * @param {(img)=>img} filter
-	 * @param {[number, number]} position Position vector
-	 */
-	constructor(img, filter, position) {
+	constructor(img, x, y) {
 		this.img = img;
-		this.filter = filter;
-		this.position = position;
+		this.x = x;
+		this.y = y;
 	}
 
-	// Resizes the image.
-	#resize() {
-		this.img.resize(160, 120);
-	}
-
-	#applyFilter() {
-		// Apply filter to image
-	}
-
-	// Draws the image into the canvas.
 	draw() {
-		image(this.img, this.position[0], position[1]);
+		image(this.img, this.x, this.y);
+	}
+}
+
+class ColorWidget extends Widget {
+	constructor(img, x, y, color, useTreshold = false) {
+		super(img, x, y);
+		this.color = color;
+		this.useTreshold = useTreshold;
+
+		if (this.useTreshold) {
+			const thresholdSlider = createSlider(0, 255, 125);
+			const thresholdID = `thresholder-${Math.floor(
+				Math.random() * (99999 - 1) - 1
+			)}`;
+			thresholdSlider.id(thresholdID);
+			thresholdSlider.position(this.x, this.y + this.img.height - 50);
+
+			this.thresholdSlider = thresholdSlider;
+		} else {
+			this.thresholdSlider = null;
+		}
+	}
+	draw() {
+		if (this.useTreshold && this.thresholdSlider) {
+			image(
+				thresholdRGBFilter(
+					this.img,
+					this.color,
+					this.thresholdSlider.value()
+				),
+				this.x,
+				this.y
+			);
+		} else {
+			image(rgbChannelFilter(this.img, this.color), this.x, this.y);
+		}
 	}
 }

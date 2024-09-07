@@ -1,5 +1,5 @@
-let capture, img;
-let ready = false;
+//let capture, img;
+/* let ready = false;
 
 let faceMesh,
 	options = { maxFaces: 1, refineLandmarks: false, flipped: false },
@@ -8,36 +8,37 @@ let faceMesh,
 const w = 160,
 	h = 120,
 	gap = 20;
-
-/**
- * @type {{red: number[], green: number[], blue: number[], alpha: number[]}}
  */
-let rgbaChannels;
+
+let img;
+let widgets;
 
 function preload() {
 	img = loadImage("image.png");
 }
 
 function setup() {
-	createCanvas(img.width * 2, img.height * 2);
+	createCanvas(img.width * 3, img.height * 2);
 	pixelDensity(1);
+
+	widgets = [
+		new Widget(img, 0, 0),
+		new Widget(grayscaleFilter(img), img.width, 0),
+		new ColorWidget(img, 0, img.height, "red"),
+		new ColorWidget(img, img.width, img.height, "red", true),
+		new ColorWidget(img, img.width * 2, 0, "green", false),
+		new ColorWidget(img, img.width * 2, img.height, "blue", false),
+	];
 }
 
 function draw() {
 	background(255, 0, 255);
 
-	image(img, 0, 0);
+	for (const widget of widgets) {
+		widget.draw();
+	}
 
-	// Invert filter
-	image(grayscaleFilter(img), img.width, 0);
-
-	// Grayscale filter
-	image(rgbChannelFilter(img, "red"), 0, img.height);
-
-	// Threshold channel filter
-	image(thresholdRGBFilter(img, "red", 125), img.width, img.height);
-
-	noLoop();
+	//noLoop();
 }
 
 /* function preload() {
