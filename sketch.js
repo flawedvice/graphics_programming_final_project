@@ -34,13 +34,22 @@ function draw() {
 	// Grayscale filter
 	image(grayscaleFilter(img), 0, img.height);
 
+	// Red Channel filter
+	image(rgbChannelFilter(img, "blue"), img.width, img.height);
+
 	noLoop();
 }
 
-/* function redChannelFilter(img) {
-	const grayscale = createImage(img.width, img.height);
+/**
+ *
+ * @param {*} img
+ * @param {'red'|'green'|'blue'} channel
+ * @returns
+ */
+function rgbChannelFilter(img, channel) {
+	const channeled = createImage(img.width, img.height);
 
-	grayscale.loadPixels();
+	channeled.loadPixels();
 	img.loadPixels();
 
 	let index = 0,
@@ -59,20 +68,17 @@ function draw() {
 			blue = img.pixels[index + 2];
 			alpha = img.pixels[index + 3];
 
-			// Compute average value
-			const avg = (red + green + blue) / 3;
-
-			// Replace grayscale pixels into new image
-			grayscale.pixels[index + 0] = avg;
-			grayscale.pixels[index + 1] = avg;
-			grayscale.pixels[index + 2] = avg;
-			grayscale.pixels[index + 3] = alpha;
+			// Replace channeled pixels into new image
+			channeled.pixels[index + 0] = channel === "red" ? red : 0;
+			channeled.pixels[index + 1] = channel === "green" ? green : 0;
+			channeled.pixels[index + 2] = channel === "blue" ? blue : 0;
+			channeled.pixels[index + 3] = alpha;
 		}
 	}
 
-	grayscale.updatePixels();
-	return grayscale;
-} */
+	channeled.updatePixels();
+	return channeled;
+}
 
 /* function preload() {
 	// Face detection configuration

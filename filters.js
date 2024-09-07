@@ -74,78 +74,42 @@ function grayscaleFilter(img) {
 	return grayscale;
 }
 
-/* /**
- * Separates image into four channels: RGBA
+/**
+ *
  * @param {*} img
- * @returns Channels object with one array of pixels per channel.
- 
-function separateChannels(img) {
+ * @param {'red'|'green'|'blue'} channel
+ * @returns
+ */
+function rgbChannelFilter(img, channel) {
+	const channeled = createImage(img.width, img.height);
+
+	channeled.loadPixels();
 	img.loadPixels();
 
-	/**
-	 * @type {{red: number[], green: number[], blue: number[], alpha: number[]}}
-	 
-	const channels = {
-		red: [],
-		green: [],
-		blue: [],
-		alpha: [],
-	};
+	let index = 0,
+		red = 0,
+		green = 0,
+		blue = 0,
+		alpha = 0;
 
-	let index = 0;
-	// For every row of pixels
-	for (let i = 0; i < img.height; ++i) {
-		// For every column of pixels
-		for (let j = 0; j < img.width / 4; ++j) {
-			index = i * img.width + j * 4;
-			channels.red.push(img.pixels[index + 0]);
-			channels.green.push(img.pixels[index + 1]);
-			channels.blue.push(img.pixels[index + 2]);
-			channels.alpha.push(img.pixels[index + 3]);
+	for (let x = 0; x < img.width; x++) {
+		for (let y = 0; y < img.height; y++) {
+			index = (y * img.width + x) * 4;
+
+			// Access original pixels
+			red = img.pixels[index + 0];
+			green = img.pixels[index + 1];
+			blue = img.pixels[index + 2];
+			alpha = img.pixels[index + 3];
+
+			// Replace channeled pixels into new image
+			channeled.pixels[index + 0] = channel === "red" ? red : 0;
+			channeled.pixels[index + 1] = channel === "green" ? green : 0;
+			channeled.pixels[index + 2] = channel === "blue" ? blue : 0;
+			channeled.pixels[index + 3] = alpha;
 		}
 	}
 
-	return channels;
+	channeled.updatePixels();
+	return channeled;
 }
-
-/**
- *
- * @param {number[]} pixels
- * @param {'red'|'green'|'blue'} channel
- * @param {number} x
- * @param {number} y
- * @param {number} w
- * @param {number} h
- 
-function drawChannel(pixels, channel, x, y, w, h) {
-	rect;
-	let xIndex = x,
-		yIndex = y;
-
-	// For every row
-	/* for (let i = 0; i < h; ++i) {
-		yIndex = y + i;
-		// For every column
-		for (let j = 0; j < w; ++j) {
-			xIndex = x + j;
-
-			switch (channel) {
-				case "red":
-					fill(pixels[yIndex * w + xIndex], 0, 0);
-					break;
-				case "green":
-					fill(0, pixels[yIndex * w + xIndex], 0);
-					break;
-				case "blue":
-					fill(0, 0, pixels[yIndex * w + xIndex]);
-					break;
-				default:
-					fill(0, 0, 0);
-			}
-			rect(xIndex, yIndex, 1, 1);
-		}
-	} 
-	fill(255, 0, 0);
-
-	rect(x, y, 100, 100);
-} */
