@@ -78,50 +78,10 @@ function grayscaleFilter(img) {
  *
  * @param {*} img
  * @param {'red'|'green'|'blue'} channel
- * @returns
- */
-function rgbChannelFilter(img, channel) {
-	const channeled = createImage(img.width, img.height);
-
-	channeled.loadPixels();
-	img.loadPixels();
-
-	let index = 0,
-		red = 0,
-		green = 0,
-		blue = 0,
-		alpha = 0;
-
-	for (let x = 0; x < img.width; x++) {
-		for (let y = 0; y < img.height; y++) {
-			index = (y * img.width + x) * 4;
-
-			// Access original pixels
-			red = img.pixels[index + 0];
-			green = img.pixels[index + 1];
-			blue = img.pixels[index + 2];
-			alpha = img.pixels[index + 3];
-
-			// Replace channeled pixels into new image
-			channeled.pixels[index + 0] = channel === "red" ? red : 0;
-			channeled.pixels[index + 1] = channel === "green" ? green : 0;
-			channeled.pixels[index + 2] = channel === "blue" ? blue : 0;
-			channeled.pixels[index + 3] = alpha;
-		}
-	}
-
-	channeled.updatePixels();
-	return channeled;
-}
-
-/**
- *
- * @param {*} img
- * @param {'red'|'green'|'blue'} channel
  * @param {number} threshold
  * @returns
  */
-function thresholdRGBFilter(img, channel, threshold) {
+function RGBFilter(img, channel, threshold) {
 	const channeled = createImage(img.width, img.height);
 
 	channeled.loadPixels();
@@ -147,17 +107,17 @@ function thresholdRGBFilter(img, channel, threshold) {
 			blue = img.pixels[index + 2];
 			alpha = img.pixels[index + 3];
 
-			// Apply threshold to colors
-			redThreshold = red > threshold ? 255 : 0;
-			greenThreshold = green > threshold ? 255 : 0;
-			blueThreshold = blue > threshold ? 255 : 0;
+			if (threshold) {
+				// Apply threshold to colors
+				red = red > threshold ? 255 : 0;
+				green = green > threshold ? 255 : 0;
+				blue = blue > threshold ? 255 : 0;
+			}
 
 			// Replace channeled pixels into new image
-			channeled.pixels[index + 0] = channel === "red" ? redThreshold : 0;
-			channeled.pixels[index + 1] =
-				channel === "green" ? greenThreshold : 0;
-			channeled.pixels[index + 2] =
-				channel === "blue" ? blueThreshold : 0;
+			channeled.pixels[index + 0] = channel === "red" ? red : 0;
+			channeled.pixels[index + 1] = channel === "green" ? green : 0;
+			channeled.pixels[index + 2] = channel === "blue" ? blue : 0;
 			channeled.pixels[index + 3] = alpha;
 		}
 	}
@@ -169,9 +129,9 @@ function thresholdRGBFilter(img, channel, threshold) {
 /**
  *
  * @param {*} img
- * @param {'HSV'|'HSI'|'LAB'} colorSpace
+ * @param {'HSV'|'HSI'} colorSpace
  */
-function colorSpaceFilter(img, colorSpace) {
+function colorSpaceFilter(img, colorSpace, threshold) {
 	const transformed = createImage(img.width, img.height);
 
 	transformed.loadPixels();
@@ -190,9 +150,6 @@ function colorSpaceFilter(img, colorSpace) {
 
 	// Values used in HSI color space transformation
 	let H, S, I, sum;
-
-	// Values used in LAB color space transformation
-	let X, Y, Z, white, L, A, B;
 
 	// Common values used by previous transformations
 	let redPrime, greenPrime, bluePrime;
@@ -234,6 +191,13 @@ function colorSpaceFilter(img, colorSpace) {
 				}
 				hue *= 60;
 
+				// Apply threshold to colors if needed
+				if (threshold) {
+					hue = hue > threshold ? 255 : 0;
+					saturation = saturation > threshold ? 255 : 0;
+					value = value > threshold ? 255 : 0;
+				}
+
 				// Replace filtered pixels into new image
 				transformed.pixels[index + 0] = hue;
 				transformed.pixels[index + 1] = saturation;
@@ -255,6 +219,13 @@ function colorSpaceFilter(img, colorSpace) {
 				if (S === 0) H = 0;
 				if (blue / I > green / I) H = 360 - H;
 
+				// Apply threshold to colors if needed
+				if (threshold) {
+					H = H > threshold ? 255 : 0;
+					S = S > threshold ? 255 : 0;
+					I = I > threshold ? 255 : 0;
+				}
+
 				// Replace filtered pixels into new image
 				transformed.pixels[index + 0] = H;
 				transformed.pixels[index + 1] = S;
@@ -269,7 +240,6 @@ function colorSpaceFilter(img, colorSpace) {
 			transformed.pixels[index + 3] = alpha;
 		}
 	}
-	console.log(colorSpace, Y, Cb, Cr);
 
 	transformed.updatePixels();
 	return transformed;
