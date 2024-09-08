@@ -14,7 +14,7 @@ let img;
 let widgets;
 
 function preload() {
-	img = loadImage("image.png");
+	img = loadImage("flowers.png");
 }
 
 function setup() {
@@ -23,11 +23,14 @@ function setup() {
 
 	widgets = [
 		new Widget(img, 0, 0),
-		new Widget(grayscaleFilter(img), img.width, 0),
-		new ColorWidget(img, 0, img.height, "red"),
-		new ColorWidget(img, img.width, img.height, "red", true),
-		new ColorWidget(img, img.width * 2, 0, "green", false),
-		new ColorWidget(img, img.width * 2, img.height, "blue", true),
+		new Widget(colorSpaceFilter(img, "HSV"), img.width, 0),
+		new Widget(colorSpaceFilter(img, "HSI"), 0, img.height),
+		new Widget(colorSpaceFilter(img, "YCbCr"), img.width, img.height),
+		//new Widget(grayscaleFilter(img), img.width, 0),
+		//new ColorWidget(img, 0, img.height, "red"),
+		//new ColorWidget(img, img.width, img.height, "red", true),
+		//new ColorWidget(img, img.width * 2, 0, "green", false),
+		//new ColorWidget(img, img.width * 2, img.height, "blue", true),
 	];
 }
 
