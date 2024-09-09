@@ -1,5 +1,5 @@
 /**
- * Captrues picture from video.
+ * Captures a picture from a video.
  * @param {*} capture
  * @returns img object
  */
@@ -19,22 +19,4 @@ function takePicture(capture) {
 		img.height
 	);
 	return img;
-}
-
-/**
- * Detects faces asynchronously using ml5js faceMesh api
- * @param {*} img
- * @returns Promise with detected faces array
- */
-async function detectFaces(img) {
-	const promise = new Promise((resolve, reject) => {
-		faceMesh.detect(img, (results, error) => {
-			if (error) {
-				reject(error);
-			} else {
-				resolve(results);
-			}
-		});
-	});
-	return promise;
 }

@@ -1,3 +1,8 @@
+/**
+ *
+ * @param {*} img
+ * @returns Filtered image
+ */
 function invertFilter(img) {
 	const inverted = createImage(img.width, img.height);
 
@@ -31,6 +36,10 @@ function invertFilter(img) {
 	return inverted;
 }
 
+/**
+ * @param {*} img
+ * @returns Filtered image
+ */
 function grayscaleFilter(img) {
 	const grayscale = createImage(img.width, img.height);
 
@@ -43,6 +52,7 @@ function grayscaleFilter(img) {
 		blue = 0,
 		alpha = 0;
 
+	// Add 20% of brightness
 	const brightness = 1.2;
 
 	for (let x = 0; x < img.width; x++) {
@@ -79,7 +89,7 @@ function grayscaleFilter(img) {
  * @param {*} img
  * @param {'red'|'green'|'blue'} channel
  * @param {number} threshold
- * @returns
+ * @returns Filtered image
  */
 function RGBFilter(img, channel, threshold) {
 	const channeled = createImage(img.width, img.height);
@@ -126,6 +136,8 @@ function RGBFilter(img, channel, threshold) {
  *
  * @param {*} img
  * @param {'HSV'|'HSI'} colorSpace
+ * @param {number} threshold
+ * @returns Filtered image
  */
 function colorSpaceFilter(img, colorSpace, threshold) {
 	const transformed = createImage(img.width, img.height);
@@ -245,7 +257,7 @@ function colorSpaceFilter(img, colorSpace, threshold) {
  *
  * @param {*} img
  * @param {number} level Blur level
- * @returns
+ * @returns Filtered image
  */
 function blurFilter(img, level) {
 	const blurred = createImage(img.width, img.height);
@@ -259,9 +271,11 @@ function blurFilter(img, level) {
 		blue = 0,
 		alpha = 0;
 
+	// Create a dynamic kernel based on level of blur
 	const baseArray = new Array(level).fill(1 / pow(level, 2));
 	const kernel = new Array(level).fill(baseArray);
 
+	// Convolution results array
 	let c = [];
 
 	for (let x = 0; x < img.width; x++) {
@@ -274,6 +288,7 @@ function blurFilter(img, level) {
 			blue = img.pixels[index + 2];
 			alpha = img.pixels[index + 3];
 
+			// Store convolution results
 			c = convolution(x, y, kernel, img);
 
 			// Replace blurred pixels into new image
@@ -291,10 +306,7 @@ function blurFilter(img, level) {
 /**
  *
  * @param {*} img
- * @param {number} xLoc
- * @param {number} yLoc
- * @param {number} level Pixelation level
- * @returns
+ * @returns Filtered image
  */
 function pixelatedFilter(img) {
 	// First, set image to grayscale
@@ -323,7 +335,8 @@ function pixelatedFilter(img) {
 					green = img.pixels[index + 1];
 					blue = img.pixels[index + 2];
 					alpha = img.pixels[index + 3];
-					// Save both RGBA channels and the pixel index for easy mapping
+
+					// Save both RGBA channels and the pixel index for easy re-mapping
 					pixels.push({
 						idx: index,
 						channels: [red, green, blue, alpha],
@@ -334,7 +347,7 @@ function pixelatedFilter(img) {
 		}
 	}
 
-	// Compute average pixel intensity
+	// Compute average pixel intensity of blocks
 	let avgRed, avgGreen, avgBlue, avgAlpha;
 	const blocksAvg = [];
 	for (const block of blocks) {
@@ -378,8 +391,4 @@ function pixelatedFilter(img) {
 
 	pixelated.updatePixels();
 	return pixelated;
-}
-
-function customFaceFilter(img) {
-	return RGBFilter(img, "red");
 }

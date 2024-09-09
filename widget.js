@@ -1,3 +1,8 @@
+/**
+ * Simple widget that display an image and a title.
+ *
+ * The image can be previously filtered.
+ */
 class Widget {
 	/**
 	 *
@@ -30,6 +35,11 @@ class Widget {
 	}
 }
 
+/**
+ * Shows image with only one color channel (R,G, or B).
+ *
+ * Can be drawn with a threshold control.
+ */
 class ColorWidget extends Widget {
 	/**
 	 *
@@ -71,6 +81,11 @@ class ColorWidget extends Widget {
 	}
 }
 
+/**
+ * Shows image after transforming it into another color space.
+ *
+ * Can be drawn with a threshold control.
+ */
 class ColorSpaceWidget extends Widget {
 	/**
 	 *
@@ -120,6 +135,9 @@ class ColorSpaceWidget extends Widget {
 	}
 }
 
+/**
+ * Shows image and applies a face filter on top.
+ */
 class FaceDetectionWidget extends Widget {
 	/**
 	 *
@@ -198,6 +216,7 @@ class FaceDetectionWidget extends Widget {
 			pop();
 		}
 
+		// Draw extra instructions
 		push();
 		fill(255, 255, 255);
 		rect(this.x, this.y + this.img.height - 20, this.img.width, 20);
@@ -246,6 +265,9 @@ class FaceDetectionWidget extends Widget {
 	}
 }
 
+/**
+ * Shows live video and applies a face filter on top.
+ */
 class LiveFaceDetectionWidget extends Widget {
 	/**
 	 *

@@ -1,10 +1,10 @@
 /**
- *
+ * Convolution function used in blur filter
  * @param {number} x
  * @param {number} y
  * @param {number[][]} kernel NxN matrix
  * @param {*} img
- * @returns
+ * @returns RGB colors
  */
 function convolution(x, y, kernel, img) {
 	let totalRed = 0,

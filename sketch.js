@@ -1,19 +1,18 @@
-/*
-let ready = false;
-const gap = 20;
-*/
-
+// Image and video variables
 let capture,
 	img,
 	ready = false;
-let widgets;
+
+// Face detection variables
 let faceMesh,
 	faces = [],
 	liveFaces = [];
 
-const loadFaces = true;
+// Widgets variable
+let widgets;
 
 function preload() {
+	// Use sample image took using this program (keyReleased function)
 	img = loadImage("samples/image.png");
 
 	// Start capturing the video
@@ -21,23 +20,24 @@ function preload() {
 	capture.hide();
 	capture.elt.addEventListener("playing", () => (ready = true));
 
-	if (loadFaces) {
-		// Instantiate faceMesh
-		faceMesh = ml5.faceMesh({
-			maxFaces: 1,
-			refineLandmarks: false,
-			flipHorizontal: false,
-		});
-	}
+	// Instantiate faceMesh
+	faceMesh = ml5.faceMesh({
+		maxFaces: 1,
+		refineLandmarks: false,
+		flipHorizontal: false,
+	});
 }
 
 function setup() {
+	// Basix canvas and image configuration
 	createCanvas(1200, 900);
 	pixelDensity(1);
 
+	// Resize both image and video
 	img.resize(160, 120);
 	capture.size(160, 120);
 
+	// Instantiate widgets array
 	widgets = [
 		// 0.- Original
 		new Widget("Webcam image", img, 0, 0),
@@ -92,7 +92,7 @@ function setup() {
 			img.height * 3,
 			"HSI"
 		),
-		// 11.- Face detection
+		// 11.- Face detection. `null` until face detection is enabled
 		null,
 		// 12.- Color Space 1 (HSV) with Threshold
 		new ColorSpaceWidget(
@@ -112,7 +112,7 @@ function setup() {
 			"HSI",
 			true
 		),
-		// 14.- Custom!
+		// 14.- Custom Filter Widget
 		new LiveFaceDetectionWidget(
 			capture,
 			"Daruma",
@@ -124,40 +124,39 @@ function setup() {
 	];
 
 	// Detect and add face filters
-	if (loadFaces) {
-		// Image faces
-		faceMesh.detect(img, (results, error) => {
-			if (results) {
-				faces = results;
-				widgets[11] = new FaceDetectionWidget(
-					"Face detection",
-					img,
-					0,
-					img.height * 4,
-					null,
-					faces[0]
-				);
-			}
-			if (error) {
-				console.log(error);
-				return;
-			}
-		});
+	// Image face
+	faceMesh.detect(img, (results, error) => {
+		if (results) {
+			faces = results;
+			widgets[11] = new FaceDetectionWidget(
+				"Face detection",
+				img,
+				0,
+				img.height * 4,
+				null,
+				faces[0]
+			);
+		}
+		if (error) {
+			console.log(error);
+			return;
+		}
+	});
 
-		// Live faces
-		faceMesh.detectStart(capture, (results, error) => {
-			if (results) {
-				liveFaces = results;
-			}
-			if (error) {
-				console.log(error);
-				return;
-			}
-		});
-	}
+	// Live face
+	faceMesh.detectStart(capture, (results, error) => {
+		if (results) {
+			liveFaces = results;
+		}
+		if (error) {
+			console.log(error);
+			return;
+		}
+	});
 }
 
 function draw() {
+	// Set a clear background
 	background(245, 245, 245);
 
 	if (img && widgets) {
@@ -170,10 +169,13 @@ function draw() {
 			0,
 			liveFaces[0]
 		);
+
+		// Draw every widget's image
 		for (const widget of widgets) {
 			if (widget) widget.draw();
 		}
 	} else {
+		// Use to take picture and later replace in `samples/image.png`
 		image(capture, 0, 0, w * 2, h * 2);
 	}
 }
@@ -186,6 +188,7 @@ function keyReleased() {
 		ready = false;
 	}
 
+	// Enables face filter switch
 	switch (key) {
 		case "1":
 			// keystroke "1"
