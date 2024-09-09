@@ -37,35 +37,87 @@ function setup() {
 
 	widgets = [
 		// 0.- Original
-		//new Widget(img, 0, 0),
+		new Widget("Original", img, 0, 0),
 		// 1.- Grayscale + 20% brightness
-		//new Widget(grayscaleFilter(img), img.width, 0),
+		new Widget(
+			"Grayscale + brightness",
+			grayscaleFilter(img),
+			img.width,
+			0
+		),
 		// 2.- Red Channel
-		//new ColorWidget(img, 0, img.height, "red"),
+		new ColorWidget("Red", img, 0, img.height, "red"),
 		// 3.- Green Channel
-		//new ColorWidget(img, img.width, img.height, "green"),
+		new ColorWidget("Green", img, img.width, img.height, "green"),
 		// 4.- Blue Channel
-		//new ColorWidget(img, img.width * 2, img.height, "blue"),
+		new ColorWidget("Blue", img, img.width * 2, img.height, "blue"),
 		// 5.- Red Channel with Threshold
-		//new ColorWidget(img, 0, img.height * 2, "red", true),
+		new ColorWidget("Red + control", img, 0, img.height * 2, "red", true),
 		// 6.- Green Channel with Threshold
-		//new ColorWidget(img, img.width, img.height * 2, "green", true),
+		new ColorWidget(
+			"Green + control",
+			img,
+			img.width,
+			img.height * 2,
+			"green",
+			true
+		),
 		// 7.- Blue Channel with Threshold
-		//new ColorWidget(img, img.width * 2, img.height * 2, "blue", true),
+		new ColorWidget(
+			"Blue + control",
+			img,
+			img.width * 2,
+			img.height * 2,
+			"blue",
+			true
+		),
 		// 8.- Repeat original
-		//new Widget(img, 0, img.height * 3),
+		new Widget("Repeat original", img, 0, img.height * 3),
 		// 9.- Color Space 1 (HSV)
-		//new ColorSpaceWidget(img, img.width, img.height * 3, "HSV"),
+		new ColorSpaceWidget(
+			"Color Space (HSV)",
+			img,
+			img.width,
+			img.height * 3,
+			"HSV"
+		),
 		// 10.- Color Space 2 (HSI)
-		//new ColorSpaceWidget(img, img.width * 2, img.height * 3, "HSI"),
-		// 11.- Face replaced
+		new ColorSpaceWidget(
+			"Color Space (HSI)",
+			img,
+			img.width * 2,
+			img.height * 3,
+			"HSI"
+		),
+		// 11.- Face detection
 		null,
 		// 12.- Color Space 1 (HSV) with Threshold
-		//new ColorSpaceWidget(img, img.width, img.height * 4, "HSV", true),
+		new ColorSpaceWidget(
+			"Color Space (HSV) + control",
+			img,
+			img.width,
+			img.height * 4,
+			"HSV",
+			true
+		),
 		// 13.- Color Space 2 (HSI) with Threshold
-		//new ColorSpaceWidget(img, img.width * 2, img.height * 4, "HSI", true),
+		new ColorSpaceWidget(
+			"Color Space (HSI) + control",
+			img,
+			img.width * 2,
+			img.height * 4,
+			"HSI",
+			true
+		),
 		// 14.- Custom!
-		new LiveFaceDetectionWidget(capture, img, img.width * 2, 0),
+		new LiveFaceDetectionWidget(
+			capture,
+			"Daruma",
+			img,
+			img.width * 2,
+			0,
+			liveFaces[0]
+		),
 	];
 
 	// Detect and add face filters
@@ -75,6 +127,7 @@ function setup() {
 			if (results) {
 				faces = results;
 				widgets[11] = new FaceDetectionWidget(
+					"Face detection",
 					img,
 					0,
 					img.height * 4,
@@ -91,7 +144,6 @@ function setup() {
 		// Live faces
 		faceMesh.detectStart(capture, (results, error) => {
 			if (results) {
-				if (!liveFaces[0]) console.log(results);
 				liveFaces = results;
 			}
 			if (error) {
@@ -109,6 +161,7 @@ function draw() {
 		// Update Live Face Detection on every tick
 		widgets[14] = new LiveFaceDetectionWidget(
 			capture,
+			"Daruma",
 			img,
 			img.width * 2,
 			0,
@@ -127,10 +180,11 @@ function keyReleased() {
 		ready = false;
 	}
 
-	switch (keyCode) {
-		case 49:
+	switch (key) {
+		case "1":
 			// keystroke "1"
 			widgets[11] = new FaceDetectionWidget(
+				"Face detection: grayscale",
 				img,
 				0,
 				img.height * 4,
@@ -138,9 +192,10 @@ function keyReleased() {
 				faces[0]
 			);
 			break;
-		case 50:
+		case "2":
 			// keystroke "2"
 			widgets[11] = new FaceDetectionWidget(
+				"Face detection: blur",
 				img,
 				0,
 				img.height * 4,
@@ -148,9 +203,10 @@ function keyReleased() {
 				faces[0]
 			);
 			break;
-		case 51:
+		case "3":
 			// keystroke "3"
 			widgets[11] = new FaceDetectionWidget(
+				"Face detection: colorSpace",
 				img,
 				0,
 				img.height * 4,
@@ -158,9 +214,10 @@ function keyReleased() {
 				faces[0]
 			);
 			break;
-		case 52:
+		case "4":
 			// keystroke "4"
 			widgets[11] = new FaceDetectionWidget(
+				"Face detection: pixelated",
 				img,
 				0,
 				img.height * 4,
@@ -168,9 +225,10 @@ function keyReleased() {
 				faces[0]
 			);
 			break;
-		case 53:
+		case "5":
 			// keystroke "5"
 			widgets[11] = new FaceDetectionWidget(
+				"Face detection: inverted",
 				img,
 				0,
 				img.height * 4,
@@ -178,19 +236,10 @@ function keyReleased() {
 				faces[0]
 			);
 			break;
-		case 54:
+		case "6":
 			// keystroke "6"
 			widgets[11] = new FaceDetectionWidget(
-				capture,
-				0,
-				img.height * 4,
-				"custom",
-				faces[0]
-			);
-			break;
-		case 55:
-			// keystroke "7"
-			widgets[11] = new FaceDetectionWidget(
+				"Face detection: none",
 				img,
 				0,
 				img.height * 4,

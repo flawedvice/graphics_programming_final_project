@@ -1,32 +1,47 @@
 class Widget {
 	/**
 	 *
+	 * @param {string} title
 	 * @param {*} img
 	 * @param {number} x
 	 * @param {number} y
 	 */
-	constructor(img, x, y) {
+	constructor(title, img, x, y) {
+		this.title = title;
 		this.img = img;
 		this.x = x;
 		this.y = y;
 	}
 
+	drawTitle() {
+		push();
+		fill(255, 255, 255);
+		rect(this.x, this.y, this.img.width, 20);
+		textAlign(LEFT);
+		fill(0, 0, 0);
+		text(this.title, this.x + 4, this.y + 14);
+		pop();
+	}
+
 	draw() {
 		image(this.img, this.x, this.y);
+
+		this.drawTitle();
 	}
 }
 
 class ColorWidget extends Widget {
 	/**
 	 *
+	 * @param {string} title
 	 * @param {*} img
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {'red'|'green'|'blue'} color
 	 * @param {boolean} useTreshold
 	 */
-	constructor(img, x, y, color, useTreshold = false) {
-		super(img, x, y);
+	constructor(title, img, x, y, color, useTreshold = false) {
+		super(title, img, x, y);
 		this.color = color;
 		this.useTreshold = useTreshold;
 
@@ -40,6 +55,7 @@ class ColorWidget extends Widget {
 			);
 		}
 	}
+
 	draw() {
 		if (this.useTreshold && this.thresholdSlider) {
 			image(
@@ -50,20 +66,23 @@ class ColorWidget extends Widget {
 		} else {
 			image(RGBFilter(this.img, this.color, null), this.x, this.y);
 		}
+
+		this.drawTitle();
 	}
 }
 
 class ColorSpaceWidget extends Widget {
 	/**
 	 *
+	 * @param {string} title
 	 * @param {*} img
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {'HSV'|'HSI'} colorSpace
 	 * @param {boolean} useTreshold
 	 */
-	constructor(img, x, y, colorSpace, useTreshold = false) {
-		super(img, x, y);
+	constructor(title, img, x, y, colorSpace, useTreshold = false) {
+		super(title, img, x, y);
 		this.colorSpace = colorSpace;
 		this.useTreshold = useTreshold;
 
@@ -77,6 +96,7 @@ class ColorSpaceWidget extends Widget {
 			);
 		}
 	}
+
 	draw() {
 		if (this.useTreshold && this.thresholdSlider) {
 			image(
@@ -95,31 +115,34 @@ class ColorSpaceWidget extends Widget {
 				this.y
 			);
 		}
+
+		this.drawTitle();
 	}
 }
 
 class FaceDetectionWidget extends Widget {
 	/**
 	 *
+	 * @param {string} title
 	 * @param {*} img
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {'grayscale'|'colorSpace'|'inverted'|'blur'|'pixelated'|null} filter
 	 * @param {*} face
 	 */
-	constructor(img, x, y, filter, face) {
-		super(img, x, y);
+	constructor(title, img, x, y, filter, face) {
+		super(title, img, x, y);
 
 		this.face = face;
 		this.box = {
-			x: this.face ? Math.floor(this.face.box.xMin) : x,
-			y: this.face ? Math.floor(this.face.box.yMin) : y,
-			w: this.face ? Math.ceil(this.face.box.width) : img.width,
-			h: this.face ? Math.ceil(this.face.box.height) : img.height,
+			x: this.face ? Math.floor(this.face.box.xMin) : 0,
+			y: this.face ? Math.floor(this.face.box.yMin) : 0,
+			w: this.face ? Math.ceil(this.face.box.width) : 0,
+			h: this.face ? Math.ceil(this.face.box.height) : 0,
 		};
 
 		// Crop image using bounding box
-		this.croppedImg = this.crop(this.img, this.box);
+		this.croppedImg = this.face ? this.crop(this.img, this.box) : this.img;
 
 		// Filter cropped image
 		this.filter = filter;
@@ -174,6 +197,16 @@ class FaceDetectionWidget extends Widget {
 			);
 			pop();
 		}
+
+		push();
+		fill(255, 255, 255);
+		rect(this.x, this.y + this.img.height - 20, this.img.width, 20);
+		textAlign(LEFT);
+		fill(0, 0, 0);
+		text("Try keys from 1 to 6", this.x + 4, this.y + this.img.height - 8);
+		pop();
+
+		this.drawTitle();
 	}
 
 	crop(img, box) {
@@ -217,13 +250,14 @@ class LiveFaceDetectionWidget extends Widget {
 	/**
 	 *
 	 * @param {*} capture
+	 * @param {string} title
 	 * @param {*} img
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {*} face
 	 */
-	constructor(capture, img, x, y, face) {
-		super(img, x, y);
+	constructor(capture, title, img, x, y, face) {
+		super(title, img, x, y);
 
 		this.capture = capture;
 		this.face = face;
@@ -240,6 +274,8 @@ class LiveFaceDetectionWidget extends Widget {
 
 			this.drawMouth();
 		}
+
+		this.drawTitle();
 	}
 
 	drawOval() {
