@@ -3,7 +3,9 @@ let ready = false;
 const gap = 20;
 */
 
-let capture, img;
+let capture,
+	img,
+	ready = false;
 let widgets;
 let faceMesh,
 	faces = [],
@@ -17,6 +19,7 @@ function preload() {
 	// Start capturing the video
 	capture = createCapture(VIDEO);
 	capture.hide();
+	capture.elt.addEventListener("playing", () => (ready = true));
 
 	if (loadFaces) {
 		// Instantiate faceMesh
@@ -37,7 +40,7 @@ function setup() {
 
 	widgets = [
 		// 0.- Original
-		new Widget("Original", img, 0, 0),
+		new Widget("Webcam image", img, 0, 0),
 		// 1.- Grayscale + 20% brightness
 		new Widget(
 			"Grayscale + brightness",
@@ -157,7 +160,7 @@ function setup() {
 function draw() {
 	background(245, 245, 245);
 
-	if (widgets) {
+	if (img && widgets) {
 		// Update Live Face Detection on every tick
 		widgets[14] = new LiveFaceDetectionWidget(
 			capture,
@@ -170,10 +173,13 @@ function draw() {
 		for (const widget of widgets) {
 			if (widget) widget.draw();
 		}
+	} else {
+		image(capture, 0, 0, w * 2, h * 2);
 	}
 }
 
 function keyReleased() {
+	// Used to take sample picture
 	if (keyCode === 32 && ready) {
 		img = takePicture(capture);
 		faceMesh.detect(img.canvas, (results) => (faces = results));
@@ -249,76 +255,3 @@ function keyReleased() {
 			break;
 	}
 }
-
-/* function preload() {
-
-	// Start capturing the video
-	//capture = createCapture(VIDEO);
-	//capture.hide();
-	//capture.elt.addEventListener("playing", () => (ready = true));
-
-	// Debugging
-	img = loadImage("image.png");
-	rgbaChannels = separateChannels(img);
-}
-
-function setup() {
-	createCanvas(1920, 963);
-	pixelDensity(1);
-	background(255);
-}
-
-function draw() {
-	background(255);
-	if (img) {
-		if (!rgbaChannels) {
-			rgbaChannels = separateChannels(img);
-		}
-
-		image(img, 100, 200, w * 2, h * 2);
-		drawChannel(rgbaChannels.red, "red", 250, 200, w * 2, h * 2);
-		//createGrid();
-
-		for (let i = 0; i < faces.length; i++) {
-			let face = faces[i];
-			for (let j = 0; j < face.keypoints.length; j++) {
-				let keypoint = face.keypoints[j];
-				fill(0, 255, 0);
-				noStroke();
-				circle(keypoint.x, keypoint.y, 1.5);
-			}
-		} 
-	} else {
-		image(capture, 0, 0, w * 2, h * 2);
-	}
-}
-
-function createGrid() {
-	let x = 0,
-		y = 0;
-
-	// Define rows (15)
-	for (let i = 0; i < 15; i++) {
-		x = 0;
-
-		// Define columns (3)
-		for (let j = 0; j < 3; j++) {
-			if (j === 2 && i === 0) {
-				drawChannel(
-					rgbaChannels.red,
-					"red",
-					x,
-					y,
-					img.width,
-					img.height
-				);
-				//continue;
-			}
-			image(img, x, y, w, h);
-			x += gap + w;
-		}
-		y += gap + h;
-	}
-}
-
- */
